@@ -24,30 +24,30 @@ namespace :db do
 
   desc 'Drop the database'
   task :drop => [:terminate] do
-    opts = $db.opts.dup
+    opts = Pakyow::Config.app.db.opts.dup
     db = opts[:database]
-    $db.disconnect
+    Pakyow::Config.app.db.disconnect
 
     opts[:database] = 'template1'
-    $db = Sequel.connect(opts)
-    $db.run "DROP DATABASE \"#{db}\";"
-    $db.disconnect
+    Pakyow::Config.app.db = Sequel.connect(opts)
+    Pakyow::Config.app.db.run "DROP DATABASE \"#{db}\";"
+    Pakyow::Config.app.db.disconnect
 
-    $db.opts[:database] = db
+    Pakyow::Config.app.db.opts[:database] = db
   end
 
   desc 'Create the database'
   task :create => [:'pakyow:prepare'] do
-    opts = $db.opts.dup
+    opts = Pakyow::Config.app.db.opts.dup
     db = opts[:database]
-    $db.disconnect
+    Pakyow::Config.app.db.disconnect
 
     opts[:database] = 'template1'
-    $db = Sequel.connect(opts)
-    $db.run "CREATE DATABASE \"#{db}\";"
-    $db.disconnect
+    Pakyow::Config.app.db = Sequel.connect(opts)
+    Pakyow::Config.app.db.run "CREATE DATABASE \"#{db}\";"
+    Pakyow::Config.app.db.disconnect
 
-    $db.opts[:database] = db
+    Pakyow::Config.app.db.opts[:database] = db
   end
 
   desc 'Migrate the database'
@@ -56,7 +56,7 @@ namespace :db do
       flags = "-M #{version}"
     end
 
-    system "bundle exec sequel -m ./migrations #{$db.url} #{flags}"
+    system "bundle exec sequel -m ./migrations #{Pakyow::Config.app.db.url} #{flags}"
   end
 
   desc 'Seed the database'
@@ -67,9 +67,9 @@ namespace :db do
   # http://stackoverflow.com/questions/5108876/kill-a-postgresql-session-connection
   desc "Fix 'database is being accessed by other users'"
   task :terminate => [:'pakyow:prepare'] do
-    unless $db.nil?
+    unless Pakyow::Config.app.db.nil?
       begin
-        $db.run <<-SQL
+        Pakyow::Config.app.db.run <<-SQL
         SELECT
         pg_terminate_backend(pid)
         FROM
