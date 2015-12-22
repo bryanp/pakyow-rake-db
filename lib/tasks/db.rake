@@ -61,7 +61,7 @@ namespace :db do
 
   desc 'Seed the database'
   task :seed => [:'pakyow:stage'] do
-    require 'config/seeds'
+    require './config/seeds'
   end
 
   # http://stackoverflow.com/questions/5108876/kill-a-postgresql-session-connection
