@@ -21,5 +21,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency('pakyow-support', '~> 0.9')
   gem.add_dependency('pakyow-core', '~> 0.9')
   gem.add_dependency('sequel', '~> 4.25')
-  gem.add_dependency('rake', '~> 10.4')
+  gem.add_dependency('rake', '~> 11.1')
 end
